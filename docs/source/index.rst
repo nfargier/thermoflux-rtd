@@ -17,7 +17,7 @@ Contents
 --------
 
 .. toctree::
-   Home <self>
+   self
    Installation
    usage
    api

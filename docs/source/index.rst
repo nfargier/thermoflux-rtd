@@ -9,7 +9,9 @@ Current Features
 
 Installation
 ************
+
 Requirements
+
 * Python >= 3.11
 * [Gurobi 11.0](https://support.gurobi.com/hc/en-us/articles/360044290292-How-do-I-install-Gurobi-for-Python-)
 

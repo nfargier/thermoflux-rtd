@@ -6,7 +6,7 @@ Building the thermo-model object
 ********************************
 
 Load a Cobra model
->>> model = cobra.io.load_model('e_coli_core')
+``model = cobra.io.load_model('e_coli_core')``
 Create the thermo model object from the cobra model 
->>> tmodel = ThermoModel(model)
+``tmodel = ThermoModel(model)``
 

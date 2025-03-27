@@ -32,7 +32,7 @@ Contents
 .. toctree::
    self
    Installation
-   usage
+   Quickstart
    api
 
 References

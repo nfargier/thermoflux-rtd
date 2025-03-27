@@ -1,6 +1,6 @@
 
-Installation on windows 
-=======================
+Installation
+============
 	
 1. To avoid dependency conflicts it is reccomended to use a python environment e.g:
 

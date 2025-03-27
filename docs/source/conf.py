@@ -2,9 +2,9 @@
 
 # -- Project information
 
-project = 'Lumache'
-copyright = '2021, Graziella'
-author = 'Graziella'
+project = 'Thermo-flux'
+copyright = '2024, E.N.Smith'
+author = 'E.N.Smith'
 
 release = '0.1'
 version = '0.1.0'

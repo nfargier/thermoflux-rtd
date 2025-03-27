@@ -13,7 +13,7 @@ Requirements
 - Python >= 3.11
 - [Gurobi 11.0](https://support.gurobi.com/hc/en-us/articles/360044290292-How-do-I-install-Gurobi-for-Python-)
 
-For more details, see :doc:installation
+For more details, see :docs:source:Installation
 
 How to use and examples 
 ***********************
@@ -37,4 +37,4 @@ Contents
 
 References
 **********
-1 .Niebel B, Leupold S, Heinemann M. An upper limit on Gibbs energy dissipation governs cellular metabolism. Nat Metab. 2019 Jan;1(1):125-132. doi: 10.1038/s42255-018-0006-7. Epub 2019 Jan 7. PMID: 32694810.
+1 .Niebel B, Leupold S, Heinemann M. An upper limit on Gibbs energy dissipation governs cellular metabolism. Nat Metab. 2019 Jan;1(1):125-132. doi: 10.1038/s42255-018-0006-7. Epub 2019 Jan 7 PMID: 32694810.

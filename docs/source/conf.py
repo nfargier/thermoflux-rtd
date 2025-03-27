@@ -18,6 +18,9 @@ extensions = [
     'sphinx.ext.autosummary',
     'sphinx.ext.intersphinx',
 ]
+extensions.append('autoapi.extension')
+
+autoapi_dirs = ['thermo_flux/']
 
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3/', None),

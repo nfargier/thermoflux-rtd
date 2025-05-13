@@ -2,9 +2,9 @@ API Documentation
 =================
 
 Core modules
------------
+------------
    
-.. automodule:: model
+.. automodule:: thermo_flux.core.model
    :members:
    :undoc-members:
    :show-inheritance:

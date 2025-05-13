@@ -1,10 +1,9 @@
-API
-===
+API Documentation
+=================
 
 .. autosummary::
    :toctree: generated
-   :maxdepth: 3
+   :recursive:
 
-   thermo_flux/core/*
-   thermo_flux/solver/gurobi
-   model
+   thermo_flux.core.model
+   thermo_flux.solver.gurobi

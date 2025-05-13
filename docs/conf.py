@@ -1,6 +1,9 @@
 # Configuration file for the Sphinx documentation builder.
 
 # -- Project information
+import os 
+import sys 
+sys.path.append('/home/nathan/thermoflux-rtd')
 
 project = 'Thermo-flux'
 copyright = '2024, E.N.Smith'

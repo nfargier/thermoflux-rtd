@@ -4,10 +4,10 @@
 import os 
 import sys 
 sys.path.append('/home/nathan/thermoflux-rtd')
-sys.path.append('/home/nathan/thermoflux-rtd/thermo_flux')
+sys.path.append('/home/nathan/thermoflux-rtd/thermo_flux/core/')
 
 try:
-    import thermo_flux.core.model
+    import model
     print("✅ Import successful")
 except Exception as e:
     print(f"❌ Import failed: {e}")

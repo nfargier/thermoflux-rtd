@@ -1,6 +1,10 @@
 API Documentation
 =================
 
-.. autosummary::
-   :toctree: generated
+Core modules
+-----------
    
+.. automodule:: model
+   :members:
+   :undoc-members:
+   :show-inheritance:

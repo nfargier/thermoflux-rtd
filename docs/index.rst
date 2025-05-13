@@ -13,7 +13,7 @@ Installation
 Requirements
 
 * Python >= 3.11
-* [Gurobi 11.0](https://support.gurobi.com/hc/en-us/articles/360044290292-How-do-I-install-Gurobi-for-Python-)
+* Gurobi (https://support.gurobi.com/hc/en-us/articles/360044290292-How-do-I-install-Gurobi-for-Python-)
 
 For more details, see :ref:'installation`
 
@@ -32,6 +32,7 @@ How to cite us
 Contents
 --------
 .. toctree::
+
    self
    Installation
    Quickstart

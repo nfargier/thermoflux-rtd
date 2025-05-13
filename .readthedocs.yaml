@@ -29,3 +29,4 @@ python:
    - requirements: docs/requirements.txt
    - method: pip
      path: .
+     editable: true  # This will install in editable mode

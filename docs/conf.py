@@ -4,6 +4,7 @@
 import os 
 import sys 
 sys.path.append('/home/nathan/thermoflux-rtd')
+sys.path.append('/home/nathan/thermoflux-rtd/thermo_flux')
 
 project = 'Thermo-flux'
 copyright = '2024, E.N.Smith'

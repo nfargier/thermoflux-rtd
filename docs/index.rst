@@ -1,15 +1,29 @@
-.. include:: ../README.rst
+Thermo-flux documentation
+=========================
 
-Welcome to Lumache's documentation!
-===================================
+Tools for thermodynamically constrained FBA [[1](#references)]
 
-**Lumache** (/lu'make/) is a Python library for cooks and food lovers
-that creates recipes mixing random ingredients.
-It pulls data from the `Open Food Facts database <https://world.openfoodfacts.org/>`_
-and offers a *simple* and *intuitive* API.
+Current Features
+****************
 
-Check out the :doc:`usage` section for further information, including
-how to :ref:`installation` the project.
+
+Installation
+************
+
+Requirements
+
+* Python >= 3.11
+* Gurobi (https://support.gurobi.com/hc/en-us/articles/360044290292-How-do-I-install-Gurobi-for-Python-)
+
+For more details, see :ref:'installation`
+
+How to use and examples 
+***********************
+Example usage notebooks can be found in the examples directory. 
+
+How to cite us
+**************
+
 
 .. note::
 
@@ -17,9 +31,13 @@ how to :ref:`installation` the project.
 
 Contents
 --------
-
 .. toctree::
 
-   Home <self>
-   usage
+   self
+   Installation
+   Quickstart
    api
+
+References
+**********
+1 .Niebel B, Leupold S, Heinemann M. An upper limit on Gibbs energy dissipation governs cellular metabolism. Nat Metab. 2019 Jan;1(1):125-132. doi: 10.1038/s42255-018-0006-7. Epub 2019 Jan 7 PMID: 32694810.

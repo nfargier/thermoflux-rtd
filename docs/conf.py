@@ -6,6 +6,12 @@ import sys
 sys.path.append('/home/nathan/thermoflux-rtd')
 sys.path.append('/home/nathan/thermoflux-rtd/thermo_flux')
 
+try:
+    import thermo_flux.core.model
+    print("✅ Import successful")
+except Exception as e:
+    print(f"❌ Import failed: {e}")
+
 project = 'Thermo-flux'
 copyright = '2024, E.N.Smith'
 author = 'E.N.Smith'

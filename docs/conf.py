@@ -5,7 +5,7 @@ import os
 import sys 
 sys.path.append('/home/nathan/thermoflux-rtd')
 sys.path.insert(0,'/home/nathan/thermoflux-rtd/thermo_flux/core/')
-
+sys.path.insert(0, os.path.abspath('../thermo_flux/core/'))
 try:
     import model
     print("✅ Import successful")

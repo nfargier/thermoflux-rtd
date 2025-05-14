@@ -1,29 +1,6 @@
 # Configuration file for the Sphinx documentation builder.
 
 # -- Project information
-import site
-import pathlib
-import sys
-import os
-
-print("\n=== RTD Python Environment ===")
-print(f"sys.executable: {sys.executable}")
-print(f"sys.path:\n  " + "\n  ".join(sys.path))
-
-# Try to find site-packages
-try:
-    site_packages = site.getsitepackages()
-except AttributeError:
-    site_packages = [p for p in sys.path if 'site-packages' in p]
-
-print("\n=== Contents of site-packages/thermo_flux ===")
-for path in site_packages:
-    thermo_path = os.path.join(path, "thermo_flux")
-    if os.path.exists(thermo_path):
-        for f in pathlib.Path(thermo_path).rglob("*"):
-            print(f"  {f.relative_to(thermo_path.parent)}")
-    else:
-        print(f"  [Not found in: {path}]")
 
 try:
     import thermo_flux.core

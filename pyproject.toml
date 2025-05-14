@@ -42,4 +42,4 @@ dependencies = [
 "Bug Tracker" = "https://github.com/tednsmith/thermo_flux/issues"
 
 [tool.setuptools]
-packages = ["thermo_flux"]
+#packages = ["thermo_flux"]

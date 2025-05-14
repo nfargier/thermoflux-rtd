@@ -1453,6 +1453,21 @@ def net_elements(reaction, balance_mg = True, round_dp=False, rxn_already_balanc
 
 
 def reaction_balance(reaction, balance_charge = True, balance_mg = True, round_dp = False, rxn_already_balanced=False):
+    ''' 
+    Docstring for reaction_balance
+
+    :param reaction: Description
+    :type reaction: 
+    :param balance_charge: Description
+    :type balance_charge: 
+    :param balance_mg: Description
+    :type balance_mg: 
+    :param round_dp: Description
+    :type round_dp: 
+    :param rxn_already_balanced: Description
+    :type rxn_already_balanced: 
+    :return: Description
+    :rtype: Any'''
 
     transporter = False
 

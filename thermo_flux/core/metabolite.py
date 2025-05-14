@@ -7,6 +7,8 @@ from thermo_flux.utils.annotation import get_suitable_ids
 from thermo_flux.tools import drg_tools 
 
 from equilibrator_api import Q_
+from equilibrator_cache.models.compound import Compound as eQ_compound
+
 
 from warnings import warn
 
@@ -182,8 +184,10 @@ class ThermoMetabolite(Metabolite):
             self._compound = cpd
         return self._compound
 
-    @compound.setter
+    @compound.setter #only accept eQ_compound objects or None
     def compound(self, value):
+        if not isinstance(value, eQ_compound) and value is not None:
+            raise ValueError('compound must be an instance of equilibrator_cache.models.compound.Compound')
         self._compound = value
 
 

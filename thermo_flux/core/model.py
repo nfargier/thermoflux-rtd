@@ -310,9 +310,37 @@ class ThermoModel(Model):
         print('added reaction: ', self.reactions.get_by_id('biomass_ce'))
         print('added reaction: ', self.reactions.get_by_id('biomass_EX'))
 
+    def get_proton_transporters(self):
+        """
+        Get the proton transporters in the model
+        """
+        protons = self.proton_dict.values()
+        charges = self.charge_dict.values()
+        proton_transporters = []
+        for rxn in self.reactions:
+            rxn_met_list = [met in protons for met in rxn.metabolites if met not in charges]
+            if len(rxn_met_list) > 0:
+                if all(rxn_met_list):
+                    proton_transporters.append(rxn)
+        return proton_transporters
+
+    def get_charge_transporters(self):
+        """
+        Get the charge transporters in the model
+        """
+        charges = self.charge_dict.values()
+
+        charge_transporters = []
+        for rxn in self.reactions:
+            if all([met in charges
+                    for met in rxn.metabolites]):
+                charge_transporters.append(rxn)
+
+        return charge_transporters
+
     def add_charge_exchange(self):
         '''function to add charge transport and exchange
-          reactions to the model'''
+          reactions to the model. Skips compartment if there is already a proton transport reaction'''
         
         # compartmetns to skip as reaction already exists
         comp_skip = []
@@ -359,6 +387,56 @@ class ThermoModel(Model):
 
                         print('added reaction: ',
                                self.reactions.get_by_id('EX_charge'))
+
+    def add_proton_exchange(self):
+        '''function to add charge transport and exchange
+          reactions to the model. Skips compartment if there is already a proton transport reaction'''
+        
+        # compartmetns to skip as reaction already exists
+        comp_skip = []
+        
+        # identify if charge transport or exchange reactions already exist
+        for rxn in self.reactions:
+            if all([met in rxn.model.proton_dict.values()
+                    for met in rxn.metabolites]):
+
+                comp_skip.append([comp for comp
+                                  in rxn.compartments
+                                  if comp != 'c'][0])
+
+        for comp, proton in self.proton_dict.items():
+            # for each charge add a transport reaction to the cytosol
+            if comp != 'c':
+                if comp not in comp_skip:
+                    
+                    rxn_id = 'H_c'+comp
+
+                    proton_transport_rxn = ThermoReaction(Reaction(rxn_id))
+
+                    proton_transport_rxn.add_metabolites({proton:-1,
+                                                           self.proton_dict['c']:1})
+                    
+                    proton_transport_rxn._transported_h = {comp: -1, 'c': 1}
+
+                    proton_transport_rxn.lower_bound = -1*proton_transport_rxn.upper_bound
+
+                    self.add_reactions([proton_transport_rxn])
+                    
+                    print('added reaction: ',
+                           self.reactions.get_by_id(rxn_id))
+
+                    if comp == 'e':
+                        proton_transport_rxn = ThermoReaction(Reaction('EX_H'))
+
+                        proton_transport_rxn.add_metabolites({proton:-1})
+                        proton_transport_rxn._transported_h = {comp: -1}
+
+                        proton_transport_rxn.lower_bound = -1*proton_transport_rxn.upper_bound
+
+                        self.add_reactions([proton_transport_rxn])
+
+                        print('added reaction: ',
+                               self.reactions.get_by_id('EX_H'))
                         
     def update_biomass_dfG0(self):
         '''update the dfG0 of the biomass reaction based on the formula of biomass_c

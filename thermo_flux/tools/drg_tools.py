@@ -76,71 +76,105 @@ def get_suitable_ids(met, search = False, update_annotations = False ):
     searched = False
     annotation = {}
 
-    if not met.unknown:
+    #if not met.unknown: #still search for metabolites even if unkown... this might slow things down 
        
-        # first use metabolite annotations to find metabolite in equilibrator database
-        for key, value in met.annotation.items():
-            if found:
-                break
-            if isinstance(value, list):  # if annotations are in a sublist
-                for v in value:
-                    if found:
-                        break
-                    cpd = met.model.cc.get_compound(str(key) + ':' + v)
-                    if cpd is not None:
-                        found = True
-                        break
-            elif isinstance(value, str):
-                cpd = met.model.cc.get_compound(str(key) + ':' + value)
+    # first use metabolite annotations to find metabolite in equilibrator database
+    for key, value in met.annotation.items():
+        if found:
+            break
+        if isinstance(value, list):  # if annotations are in a sublist
+            for v in value:
+                if found:
+                    break
+                cpd = met.model.cc.get_compound(str(key) + ':' + v)
+
                 if cpd is not None:
                     found = True
                     break
-                    
-        # if the compound has been found but does not have an inchi
-        # this suggests it does not have a decomposable structure
-        # in this case default to using any InChi key or smiles specified to make a new compoud
-        if found:
-            if cpd.inchi is None:
-                cpd_new = new_eq_metabolite(met)
-                if cpd_new is not None:
-                    found = True
-                    cpd = cpd_new
+                else: #remove anything after . in identifyer key in case this causes issue 
+                    cpd = met.model.cc.get_compound(str(key.split('.')[0]) + ':' + v)
+                    if cpd is not None:
+                        found = True
+                        break
 
-        # if the compound was not found at all try and create a new compound based on inchi 
-        if not found:
+        elif isinstance(value, str):
+            cpd = met.model.cc.get_compound(str(key) + ':' + value)
+            if cpd is not None:
+                found = True
+                break
+            else: #remove anything after . in identifyer key in case this causes issue 
+                    cpd = met.model.cc.get_compound(str(key.split('.')[0]) + ':' + value)
+                    if cpd is not None:
+                        found = True
+                        break
+                
+    # if the compound has been found but does not have an inchi
+    # this suggests it does not have a decomposable structure
+    # in this case default to using any InChi key or smiles specified to make a new compoud
+    if found:
+        if cpd.inchi is None:
             cpd_new = new_eq_metabolite(met)
             if cpd_new is not None:
                 found = True
                 cpd = cpd_new
 
-        # as a last resort try searching equilibrator using any common name in metabolite notes. 
-        # note this can return incorrect compounds and needs manual checking! 
-        if not found:  
-            if search:
-                if 'common name' in met.notes:
-                    common_name = met.notes['common name']
-                    cpd = met.model.cc.search_compound(common_name) 
-                    searched = True
+    # if the compound was not found at all try and create a new compound based on inchi 
+    if not found:
+        cpd_new = new_eq_metabolite(met)
+        if cpd_new is not None:
+            found = True
+            cpd = cpd_new
 
-                if cpd is not None:
-                    found = True
-                            
-        if update_annotations: #Warning this can be slow 
-            if found:
-                annotation = met.annotation
-                for identifier in cpd.identifiers:
-                    namespace = identifier.registry.namespace
-                    if namespace in annotation:
-                        if isinstance(annotation[namespace],list):
-                            annotation[namespace].append(identifier.accession)
-                        else:
-                            annotation[namespace] = [annotation[namespace], identifier.accession]
+    # as a last resort try searching equilibrator using any common name in metabolite notes. 
+    # note this can return incorrect compounds and needs manual checking! 
+    if not found:  
+        if search:
+            if 'common name' in met.notes:
+                common_name = met.notes['common name']
+                cpd = met.model.cc.search_compound(common_name) 
+                searched = True
 
+            if cpd is None:
+                cpd = met.model.cc.search_compound(met.name) 
+                searched = True
+
+            if cpd is None:
+                for key, value in met.annotation.items():
+                    if found:
+                        break
+                    if isinstance(value, list):  # if annotations are in a sublist
+                        for v in value:
+                            if found:
+                                break
+                            cpd = met.model.cc.search_compound(value)
+                            if cpd is not None:
+                                found = True
+                                break
+                    elif isinstance(value, str):
+                        cpd = met.model.cc.search_compound(value)
+                        if cpd is not None:
+                            found = True
+                            break
+
+            if cpd is not None:
+                found = True
+                        
+    if update_annotations: #Warning this can be slow 
+        if found:
+            annotation = met.annotation
+            for identifier in cpd.identifiers:
+                namespace = identifier.registry.namespace
+                if namespace in annotation:
+                    if isinstance(annotation[namespace],list):
+                        annotation[namespace].append(identifier.accession)
                     else:
-                        annotation[identifier.registry.namespace] = identifier.accession
+                        annotation[namespace] = [annotation[namespace], identifier.accession]
 
-                formula = cpd.formula
-                inchi = cpd.inchi
+                else:
+                    annotation[identifier.registry.namespace] = identifier.accession
+
+            formula = cpd.formula
+            inchi = cpd.inchi
 
     return cpd, annotation, formula, inchi, searched
 
@@ -195,8 +229,10 @@ def calc_average_charge_protons(compound, pH, pMg, ionic_strength, temperature, 
                 average_Mg = compound.elements['Mg']
             else:
                 average_Mg = 0
-
-            average_charge = compound.charge
+            if compound.charge is None:
+                average_charge = 0
+            else:
+                average_charge = compound.charge
             microspecies_df = None
         else:
             average_protons = None
@@ -296,7 +332,11 @@ def major_microspecies(met, pH, pMg, ionic_strength_M, T_in_K ,cobra_formula=Fal
                 Mg = met.elements['Mg']
             else:
                 Mg = 0
-            charge = met.charge
+            if met.charge is None:
+                charge = 0
+            else:
+                charge = met.charge
+
         else:
             protons = None
             charge = None
@@ -490,12 +530,15 @@ def calc_dfG_transform(met):
     
     if cpd is None:
         if met.elements != {} and 'H' in met.elements.keys(): #if the metabolite has a cobra formula/charge then it can be transformed witht the number of protons
+            charge = 0 #default to 0 charge unless otherwise specified in the met.charge 
+            if met.charge:
+                charge = met.charge
             dfG_transform = thermodynamic_constants._legendre_transform(
             pH= pH.m,
             pMg= 14,#ignore magnesium 
             ionic_strength_M= I.m_as('M'),
             T_in_K= T.m,
-            charge= met.charge,
+            charge= charge,
             num_protons= met.elements['H'], 
             num_magnesiums= 0
             )*(R*T)
@@ -505,12 +548,15 @@ def calc_dfG_transform(met):
         dfG_transform = cpd.transform(pH, I, T, pMg)
     else:
         if met.elements != {} and 'H' in met.elements.keys(): #if the metabolite has a cobra formula/charge then it can be transformed with the number of protons
+            charge = 0 #default to 0 charge unless otherwise specified in the met.charge 
+            if met.charge:
+                charge = met.charge
             dfG_transform = thermodynamic_constants._legendre_transform(
             pH= pH.m,
             pMg= 14,#ignore magnesium 
             ionic_strength_M= I.m_as('M'),
             T_in_K= T.m,
-            charge= met.charge,
+            charge= charge,
             num_protons= met.elements['H'], 
             num_magnesiums= 0
             )*(R*T)
@@ -793,6 +839,7 @@ def proton_dict(tmodel):
                 proton.compound = None
                 proton._model = tmodel
                 proton.compound
+                tmodel.add_metabolites([proton])
                 proton_dict[comp] = proton
 
     return proton_dict

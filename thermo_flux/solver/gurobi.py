@@ -96,30 +96,38 @@ def add_TFBA_variables(tmodel, m, conds=[''], error_type='linear',
         else:
             m.addConstr(S@v[cond_index] <= 0+feasvar, name = 'mass_balance_neg'+str(cond))
             m.addConstr(S@v[cond_index] >= 0-feasvar, name = 'mass_balance_pos'+str(cond))
+
+
+        #for charge and proton transporters the model is infeasible if the membrane potential is 0 and the pH is the same in the two compartments
+        #in this case we will not add the drG constraints for these reactions allowing them to be freely reversible (unless otherwise constrained)
+        #this issue arrises becuse pH and membrane potentials are fixed in the model and not allowed to vary unlike other metabolite concentrations
+        charge_transport_rxns = tmodel.get_charge_transporters()
+        proton_transport_rxns = tmodel.get_proton_transporters()
+        charge_proton_rxns = charge_transport_rxns + proton_transport_rxns
         
         for i, rxn in enumerate(tmodel.reactions):
             if not rxn.ignore_snd:
-               
-                    #mixed integer constraints for flux direction 1000 is max flux 
-                    if split_v is False:
-                        m.addConstr(v[cond_index,i] <= max_flux*b[cond_index,i], name='integer_rev_'+rxn.id+'_'+str(cond))
-                        m.addConstr(v[cond_index,i] >= -max_flux*(1-b[cond_index,i]), name = 'integer_fwd_'+rxn.id+'_'+str(cond))
-                    if split_v is True:
-                        m.addConstr(v[cond_index,i] == vp[cond_index,i]-vn[cond_index,i],name='v_net'+rxn.id+'_'+str(cond))
-                        m.addConstr(vp[cond_index,i] <= max_flux*b[cond_index,i], name='integer_rev_'+rxn.id+'_'+str(cond))
-                        m.addConstr(vn[cond_index,i] <= max_flux*(1-b[cond_index,i]), name = 'integer_fwd_'+rxn.id+'_'+str(cond))
+                if not all([rxn.drG0prime == 0, rxn.drGtransport==0, rxn in charge_proton_rxns]): #catch infeasible proton and charge transport 
+                        #mixed integer constraints for flux direction 1000 is max flux 
+                        if split_v is False:
+                            m.addConstr(v[cond_index,i] <= max_flux*b[cond_index,i], name='integer_rev_'+rxn.id+'_'+str(cond))
+                            m.addConstr(v[cond_index,i] >= -max_flux*(1-b[cond_index,i]), name = 'integer_fwd_'+rxn.id+'_'+str(cond))
+                        if split_v is True:
+                            m.addConstr(v[cond_index,i] == vp[cond_index,i]-vn[cond_index,i],name='v_net'+rxn.id+'_'+str(cond))
+                            m.addConstr(vp[cond_index,i] <= max_flux*b[cond_index,i], name='integer_rev_'+rxn.id+'_'+str(cond))
+                            m.addConstr(vn[cond_index,i] <= max_flux*(1-b[cond_index,i]), name = 'integer_fwd_'+rxn.id+'_'+str(cond))
 
-                    #mixed integer constraint for drG to set direction based on + or - 
-                    if big_M is False:
-                        max_drG = min(max_drG, max(abs(drG[cond_index,i].lb),abs(drG[cond_index,i].ub)))
-                    else:
-                        max_drG = big_M
+                        #mixed integer constraint for drG to set direction based on + or - 
+                        if big_M is False:
+                            max_drG = min(max_drG, max(abs(drG[cond_index,i].lb),abs(drG[cond_index,i].ub)))
+                        else:
+                            max_drG = big_M
 
-                    m.addConstr(drG[cond_index,i] == drGp[cond_index,i]-drGn[cond_index,i],name='drG_net'+rxn.id+'_'+str(cond))
-                    m.addConstr(drGn[cond_index,i] <= max_drG*b[cond_index,i],name = 'drG_neg_'+rxn.id+'_'+str(cond))
-                    m.addConstr(drGp[cond_index,i] <= max_drG*(1-b[cond_index,i]), name = 'drG_pos_'+rxn.id+'_'+str(cond))
-                    m.addConstr((drGn[cond_index,i]+drGp[cond_index,i]) >= epsilon, 'drG_epsilon_'+rxn.id+'_'+str(cond))
-                        
+                        m.addConstr(drG[cond_index,i] == drGp[cond_index,i]-drGn[cond_index,i],name='drG_net'+rxn.id+'_'+str(cond))
+                        m.addConstr(drGn[cond_index,i] <= max_drG*b[cond_index,i],name = 'drG_neg_'+rxn.id+'_'+str(cond))
+                        m.addConstr(drGp[cond_index,i] <= max_drG*(1-b[cond_index,i]), name = 'drG_pos_'+rxn.id+'_'+str(cond))
+                        m.addConstr((drGn[cond_index,i]+drGp[cond_index,i]) >= epsilon, name = 'drG_epsilon_'+rxn.id+'_'+str(cond))
+                         
         m.update()
                 
     #condition independent variables and constraints i.e. drG errors
@@ -194,7 +202,7 @@ def add_TFBA_variables(tmodel, m, conds=[''], error_type='linear',
 
 
 
-        else:
+        elif error_type == 'linear':
             
 
             #Gibbs energy balance 
@@ -837,8 +845,31 @@ def compute_IIS(tmodel):
         if bnd.IISUB ==1:
             print(bnd, bnd.UB, 'UB') #same for upper bound 
             IIS_bound_list.append(bnd)
+
+
+    infeas_drg_rxns = []
+    infeas_drg_mets = []
+    for varr in IIS_bound_list:
+        var = varr.varName
+        print(var)
+        if any(var_id in var for var_id in ['drG_']):
+            #use re to get number form []
+            if ',' in var:
+                rxn = int(var.split(',')[1].split(']')[0])
+            else:
+                rxn = int(var.split('[')[1].split(']')[0])
+                
+            infeas_drg_rxns.append(tmodel.reactions[rxn])
+
+        if any(var_id in var for var_id in ['ln_conc']):
+            if ',' in var:
+                met = int(var.split(',')[1].split(']')[0])
+            else:
+                met = int(var.split('[')[1].split(']')[0])
+            infeas_drg_mets.append(tmodel.metabolites[met])
             
-    return IIS_constr_list, IIS_bound_list
+    return IIS_constr_list, IIS_bound_list, list(set(infeas_drg_rxns)), list(set(infeas_drg_mets))
+
 
 def model_start(tmodel, sol_file, ignore_vars = [],fix_vars=[], fix='start' ):
     """Set the model start point from a saved gurobi solution

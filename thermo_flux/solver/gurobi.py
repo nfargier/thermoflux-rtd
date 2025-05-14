@@ -786,15 +786,16 @@ def variability_results(tmodel):
         return optimal_bounds, obj_val, obj_bound, MIPGaps
 
 def read_bounds(bounds_file):
-    '''Read in bounds text file from hpc optimisation and returns a dataframe of the bounds
+    '''Read in bounds text file from hpc optimisation and returns a dataframe of the bounds.  
     Parameters
     ----------
-    bounds_file: str
-        path to bounds file with format variable_name: [lb, ub] 
+        bounds_file: str 
+            Path to bounds file with format variable_name: [lb, ub]
         
     Returns
     -------
-    drG_bounds: pandas.DataFrame 
+        drG_bounds: pandas.DataFrame 
+            DataFrame of bounds for each drG
     '''
     drG_bounds = {}
     with open(bounds_file, 'r') as f:  

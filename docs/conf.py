@@ -3,6 +3,8 @@
 # -- Project information
 import site
 import pathlib
+import sys
+import os
 
 print("\n=== RTD Python Environment ===")
 print(f"sys.executable: {sys.executable}")

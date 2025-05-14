@@ -50,6 +50,8 @@ Set a 15s time limit for the solver
 
 Start the optimization 
 ``tmodel.m.optimize()``
+``Time limit reached
+Best objective 0.545 , best bound 0.521, gap 1.36%``
 
 Now the model is fully parameterized we can run FBA style optimizations with thermodynamic constraints.
 

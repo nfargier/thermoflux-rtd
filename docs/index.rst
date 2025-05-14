@@ -32,6 +32,7 @@ How to cite us
 Contents
 --------
 .. toctree::
+   :titlesonly:
 
    self
    Installation

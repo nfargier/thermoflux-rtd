@@ -15,7 +15,7 @@ Model
 Reactions
 *********
 
-.. automodule:: thermo_flux.core.reactions
+.. automodule:: thermo_flux.core.reaction
    :members:
    :undoc-members:
    :show-inheritance:
@@ -23,7 +23,7 @@ Reactions
 Metabolites
 ***********
 
-.. automodule:: thermo_flux.core.metabolites
+.. automodule:: thermo_flux.core.metabolite
    :members:
    :undoc-members:
    :show-inheritance:

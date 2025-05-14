@@ -1,5 +1,5 @@
-Quick start
-===========
+Quick start tutorial
+====================
 As a first example, we will show how to start from a stoichiometric model and build the thermodynamic model using a toy model (e.coli core metabolism).
 For more details, please have a look at the examples/ecoli/textbook/Ecoli_example_textbook.ipynb.
 

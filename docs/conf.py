@@ -1,14 +1,10 @@
 # Configuration file for the Sphinx documentation builder.
 
 # -- Project information
-import os 
-import sys 
-sys.path.insert(0, os.path.abspath('../thermo_flux/core/'))
-sys.path.insert(0, os.path.abspath('../thermo_flux/'))
 
 
 try:
-    import model
+    import thermo_flux.core
     print("✅ Import successful")
 except Exception as e:
     print(f"❌ Import failed: {e}")
@@ -17,8 +13,8 @@ project = 'Thermo-flux'
 copyright = '2024, E.N.Smith'
 author = 'E.N.Smith'
 
-release = '0.1'
-version = '0.1.0'
+#release = '0.1'
+#version = '0.1.0'
 
 # -- General configuration
 

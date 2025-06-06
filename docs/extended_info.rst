@@ -1,10 +1,11 @@
-step 1 : 
+step 1 :  Definition of physical and biochemical parameters
+***********************************************************
 For definition of membrane potentials, ‘ce’ represents the voltage between compartment ‘c’ and compartment 'e’ defined as Phic - Phie.
 Table 1 (see old version)
 
 
 Step 2: Definition of metabolites and chemical species 
-
+******************************************************
 ‘Thermo-Flux’ automatically recognises the metabolite identifiers and links to the eQuilibrator compound retrieved with metabolite.compound.
  Annotations can be user-defined or updated in the attribute annotation of the metabolite class e.g. 
 
@@ -13,18 +14,23 @@ metabolite.annotation = {'CHEBI’:’11111’, ‘kegg’:’C00000’}
  In ‘Thermo-Flux’, the average charge, average number of protons, and magnesium ions are returned by the function metabolite.average_charge_protons() which first interrogates the eQuilibrator compound and then uses the physical parameters defined in Step 1 to return the condition specific metabolite information. 
 To facilitate the understanding of these latter average calculations, this function also returns the information on each species’ abundance and their charge, number of protons and magnesium ion (Figure 2c).   
 
-Box 1 : 
+Box 1 : additionnal consideration for metabolite definition
+-----------------------------------------------------------
+
 Definition of metabolites with non-decomposable or unknown structures
+=====================================================================
 The formula and charge for these metabolites should be defined using the COBRApy attributes with metabolite.formula and metabolites.charge. 
 
 Local cache to access eQuilibrator compounds 
+============================================
 When 'Thermo-Flux' queries an eQuilibrator compound for the first time, eQuilibrator will require downloading the latest up-to-date database of eQuilibrator compounds. This local cache is named compound.sqlite and integrates native functions to retrieve compounds or manually add compounds (https://equilibrator.readthedocs.io/en/latest/local_cache.html).  
 
 Step 3. Calculation of Gibbs formation energies  
-
+***********************************************
 The function model.update_thermo_info() will automatically calculate the required parameters based on the defined physiochemical conditions (step 1) and the metabolites of the model will now have a defined transformed Gibbs formation energy ([Equation]) and an average charge and number of protons.
 
-box 2 : 
+box 2 : additional consideration for the calculation of Gibbs formation energies  
+-----------------------------------------------------------
 uncertainty
 (different default uncertainty can be specified with model.rmse_inf = Q_(3000, 'kJ/mol')),
 We can also estimate a non-zero Gibbs formation energy for metabolites with non-decomposable or unknown structures (see supplementary section “metabolites with unknown formation energy”). This is implemented by the fit_unknown_dfG0=True argument when estimating Gibbs formation energies.   

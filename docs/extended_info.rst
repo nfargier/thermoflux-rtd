@@ -17,6 +17,8 @@ Box 1 :
 Definition of metabolites with non-decomposable or unknown structures
 The formula and charge for these metabolites should be defined using the COBRApy attributes with metabolite.formula and metabolites.charge. 
 
+Local cache to access eQuilibrator compounds 
+When 'Thermo-Flux' queries an eQuilibrator compound for the first time, eQuilibrator will require downloading the latest up-to-date database of eQuilibrator compounds. This local cache is named compound.sqlite and integrates native functions to retrieve compounds or manually add compounds (https://equilibrator.readthedocs.io/en/latest/local_cache.html).  
 
 Step 3. Calculation of Gibbs formation energies  
 
@@ -40,6 +42,7 @@ model.metabolites.biomass.dfGprime() = dfGbm
 model.metabolites.biomass.biomass = True 
 model.metabolites.biomass.dfG_SE = 0  
 
+Care must be taken when defining the units of the biomass formation energy. To maintain consistency with cellular metabolic reactions, the unit of the formation energy is entered as kJmol-1 like other metabolites, but in reality it is in JgDW-1 . This is because the biomass equation converts mmol of metabolites into gDW of biomass whereas formation energies are defined as kJmol-1 .
 
  Biomass formation energy is made dependent on the pH of the biomass metabolite’s compartment when transformed based on the number of hydrogen atoms of which it is forme. It is done automatically when building a ‘Thermo-Flux’ model if model.update_biomass_dfG0 is set to True.
 

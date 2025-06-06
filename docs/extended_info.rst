@@ -13,6 +13,9 @@ metabolite.annotation = {'CHEBI’:’11111’, ‘kegg’:’C00000’}
  In ‘Thermo-Flux’, the average charge, average number of protons, and magnesium ions are returned by the function metabolite.average_charge_protons() which first interrogates the eQuilibrator compound and then uses the physical parameters defined in Step 1 to return the condition specific metabolite information. 
 To facilitate the understanding of these latter average calculations, this function also returns the information on each species’ abundance and their charge, number of protons and magnesium ion (Figure 2c).   
 
+Box 1 : 
+Definition of metabolites with non-decomposable or unknown structures
+The formula and charge for these metabolites should be defined using the COBRApy attributes with metabolite.formula and metabolites.charge. 
 
 
 Step 3. Calculation of Gibbs formation energies  
@@ -54,4 +57,47 @@ reaction.transported_mets = {Glc_e: -1} to represent extracellular glucose as th
 By setting the argument ‘report’ to True, the function model.update_thermo_info() can provide a reporting table as a pandas DataFrame, with information on the stoichiometry, balancing status and transported metabolites/charge/protons of each reaction. In this table, reactions that require inspection by the user will appear in the top rows. 
 
  In general, this is automatically determined but in some cases is ambiguous. Ambiguous reactions are highlighted to the user for manual curation. Curation consists of specifying manually the number of transported free protons or ions. (e.g. reaction.transported_h = {'e' : -1, 'c' : 1} to represent the transport of one proton from the extracellular to cytosolic compartment). As an example, the reaction of mitochondrial Complex II " Ubiquinone-8_c + succinate_m <=> fumarate_m +   Ubiquinol-8_c” would need the user to specify "tmodel.reactions.ComplexII.transported_h = {'m': -2.0, 'c': 2.0}" as two protons are moved from the mitochondria to the cytosol and are subsequently taken up by the protonation of Ubiquinone-8  into Ubiquinol-8. 
+
+
+Step 5. pH-dependent charge and proton balancing  
+non transport
+ The reaction_balance() function can be used to automatically balance the protons in a reaction based on the compartment conditions with the option to also balance magnesium ions if desired.
+In the example of ATP hydrolysis, 0.7 protons will be added to have an equal number of protons and charge on both sides of the reaction (protons are positively charged and therefore charge balance is also maintained). 
+
+Transport reactions 
+‘Thermo-Flux’ first identifies the most abundant species (using metabolite.major_microspecies automatically)
+
+Mg ions : 
+ Analogously to protons, Mg2+ ions can also be balanced, and this option is available to the user  by setting balance_mg = True.
+
+Step 6. Calculation of Gibbs energy of reactions  
+To calculate the standard reaction energy of all reactions in the model, the function model.update_thermo_info() can be used. Once it has been run, the standard reaction energy and the standard transformed reaction energy (calculated using standard transformed formation energies) can be retrieved for each reaction with reaction.drG0 and reaction.drG0prime, respectively. 
+
+Step 7. Establishment of the thermodynamic-stoichiometric solution space  
+metabolite concentration bounds : 
+ In practice metabolite concentration bounds are defined by setting the lower_upper and upper_bound attributes and a user defined unit e.g.   metabolite.lower_bound = Q_(10, ‘µM’). The concentration values will then be automatically converted to mol/L before applying thermodynamic constraints. 
+
+
+The function model.add_TFBA_variables() sets up a thermodynamic FBA optimisation problem using the Gurobi optimiser that can be optimised using model.m.optimize(). Implementation of the constraints in the linear program is detailed in the methods see: implementing conditional constraints in a linear program. 
+
+Box 4 : 
+Compartmented metabolite concentrations  and whole cell concentrations
+The function model.total_cell_conc() will add whole cell metabolite concentration constraints on the compartmented metabolic concentrations, based on whole cell metabolite data and the relative compartment volumes which must be provided as an input to the function, respectively as a pandas DataFrame and a python dictionary. 
+
+relax 2nd law with The user can relax the second law constraint for any specific reaction by setting reaction.ignore_snd = True. 
+ignoring metabolite concentrations : 
+The concentration of pseudo metabolites that are often added to stoichiometric models as a convenient way to add constraints should also be ignored. using the function metabolite.ignore_conc = True.
+
+Variability analysis 
+In ‘Thermo-flux’ variability analysis is implemented with the function solver.gurobi.variability_analysis(), which sets the optimization problem for any variables provided as an argument to the function. Specifically, the function uses the Gurobi multi-scenario optimization feature, with two scenarios for each variable (one minimizes the variable and the other maximizes it). The results are retrieved with solver.gurobi.variability_results() and both functions can still be used if the optimization is solved using a high-performance computing (HPC) cluster. 
+
+Step 8. Regression: fitting models to experimental data 
+the function model.regression() can be used to add regression constraints and objectives to the previously constructed thermodynamic FBA problem. Data can be provided for any flux or metabolite concentration, in the pandas DataFrame format. , 
+
+Box 5 : 
+Model starting points
+The function thermo_flux.solver.gurobi.model_start has been built to allow MIP start from only non-computed values and reduce the probability of multiplying numerical issues between them. This function can even enable the start from a set of specific variables which are known to not cause numerical issues (for example, starting from only metabolite concentrations). The user can provide starting points in either .sol or .mst format : thermo_flux.solver.gurobi.model_start(tmodel,'filename.sol’,ignore_vars=['all'],fix_vars=['qm','ln_conc'],fix='start').
+
+
+
 

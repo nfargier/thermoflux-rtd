@@ -207,6 +207,7 @@ The concentration values will then be automatically converted to mol/L before ap
 The function ``model.add_TFBA_variables()`` sets up a thermodynamic FBA optimisation problem using the Gurobi optimiser that can be optimised using ``model.m.optimize()``. Implementation of the constraints in the linear program is detailed in the methods (see: implementing conditional constraints in a linear program).
 
 .. rubric:: Box 3: additional considerations for the formulation of the thermodynamic/stoichiometric solution space
+-------------------------------------------------------------------------------------------------------------------
 
 **Compartmented metabolite concentrations and whole cell concentrations**
 
@@ -234,6 +235,7 @@ Step 8: Regression: fitting models to experimental data
 The function ``model.regression()`` can be used to add regression constraints and objectives to the previously constructed thermodynamic FBA problem. Data can be provided for any flux or metabolite concentration, in the pandas DataFrame format.
 
 .. rubric:: Box 4: additional considerations for regressions
+------------------------------------------------------------
 
 **Model starting points**
 

@@ -34,7 +34,7 @@ Contents
 .. toctree::
    :hidden:
    :numbered:
-   :maxdepth: 2
+   :maxdepth: 1
 
    self
    Installation

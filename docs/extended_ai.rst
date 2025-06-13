@@ -80,15 +80,13 @@ The function ``model.update_thermo_info()`` will automatically calculate the req
 
 .. rubric:: Box 1: Additional considerations for Gibbs energy of formation calculation
 --------------------------------------------------------------------------------------
-Uncertainty
-^^^^^^^^^^^
 
+**Uncertainty**
 Different default uncertainty can be specified with ``model.rmse_inf = Q_(3000, 'kJ/mol')``.
 
 We can also estimate a non-zero Gibbs formation energy for metabolites with non-decomposable or unknown structures (see supplementary section “metabolites with unknown formation energy”). This is implemented by the ``fit_unknown_dfG0=True`` argument when estimating Gibbs formation energies.
 
-Redox
-^^^^^
+**Redox**
 
 In ``Thermo-Flux`` a formation energy and a standard error can be explicitly defined, and the ``redox`` attribute set to true to ensure the formation energy is not automatically recalculated, e.g.:
 
@@ -98,8 +96,7 @@ In ``Thermo-Flux`` a formation energy and a standard error can be explicitly def
     cyt_c_red_c.redox = True
     cyt_c_red_c.dfG_SE = Q_(0, 'kJ/mol')
 
-Biomass
-^^^^^^^
+**Biomass**
 
 In ``Thermo-Flux``, the function ``thermo_flux.tools.drg_tools.dfGbm()`` returns the biomass formation energy given a specified empirical formula of biomass and can be used to explicitly define the biomass formation energy, e.g.:
 
@@ -129,16 +126,14 @@ to define an additional proton moving from the extracellular (``e``) compartment
 
 .. rubric:: Box 2: additional considerations for transport reactions
 
-Adding transporter variants 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+**Adding transporter variants**
 Additionally, in case of transport processes, for which at the given pH value no charge-neutral transport variant exists, we suggest introducing an additional transport reaction, in which protons balancing the charge are co-translocated together with the respective species, i.e., adding a proton symporter or antiporter. This additional transport variant ensures that for every metabolite, a transport variant exists that does not translocate net charge.
 
 Addition of transporter variants can automatically be achieved with the function ``reaction.add_transporter_variants()``, which identifies the species transported in the original reaction and adds variants to represent the transport of all alternative species.
 
 For example, a model may contain a reaction for phosphate transport, ``pi_e -> pi_c``. At pH 5, this ion exists entirely in the ``H_2PO_4^-`` form with a charge of -1 (Figure 3a). Therefore, all the major species of the latter ion are already represented but a charge-neutral transporter does not exist. A proton coupled reaction of ``pi_e + H_e -> pi_c + H_c`` is automatically added to the model (Figure 3b).
 
-Transporters with simultaneous chemical transformation of the transported metabolite 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+**Transporters with simultaneous chemical transformation of the transported metabolite**
 Some transport reactions involve chemical transformation of the transported metabolite, e.g., phosphotransferase system (PTS) sugar transporters which phosphorylate sugars during transport (McCoy et al., 2015). In this case it is not possible to automatically determine the specific metabolite that is transported, as it does not appear as both a substrate and product of the reaction. Therefore, it is necessary to manually specify the transported metabolite using e.g.:
 
 ::
@@ -147,12 +142,10 @@ Some transport reactions involve chemical transformation of the transported meta
 
 to represent extracellular glucose as the metabolite that is transported across the membrane.
 
-Reporting
-^^^^^^^^^
+**Reporting**
 By setting the argument ``report`` to True, the function ``model.update_thermo_info()`` can provide a reporting table as a pandas DataFrame, with information on the stoichiometry, balancing status, and transported metabolites/charge/protons of each reaction. In this table, reactions that require inspection by the user will appear in the top rows.
 
-Ambiguous proton or ion transporters  
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+**Ambiguous proton or ion transporters**
 It is important to distinguish between free protons that are transported as part of the transport mechanism (e.g. in proton symporters) and protons which are bound/released from metabolites as part of a chemical reaction.
 In general, this is automatically determined but in some cases is ambiguous. Ambiguous reactions are highlighted to the user for manual curation. Curation consists of specifying manually the number of transported free protons or ions, e.g., ``reaction.transported_h = {'e': -1, 'c': 1}`` to represent the transport of one proton from the extracellular to cytosolic compartment.
 
@@ -212,26 +205,20 @@ The function ``model.add_TFBA_variables()`` sets up a thermodynamic FBA optimisa
 
 .. rubric:: Box 3: additional considerations for the formulation of the thermodynamic/stoichiometric solution space
 
-Compartmented metabolite concentrations and whole cell concentrations
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+**Compartmented metabolite concentrations and whole cell concentrations**
 The function ``model.total_cell_conc()`` will add whole cell metabolite concentration constraints on the compartmented metabolic concentrations, based on whole cell metabolite data and the relative compartment volumes which must be provided as an input to the function, respectively as a pandas DataFrame and a Python dictionary.
 
-Relaxing the second law constraint
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+**Relaxing the second law constraint**
 The user can relax the second law constraint for any specific reaction by setting ``reaction.ignore_snd = True``.
 
-Ignoring metabolite concentrations
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
+**Ignoring metabolite concentrations**
 The concentration of pseudo metabolites that are often added to stoichiometric models as a convenient way to add constraints should also be ignored by setting
 
 ::
 
     metabolite.ignore_conc = True
 
-Variability analysis
-^^^^^^^^^^^^^^^^^^^^
-
+**Variability analysis**
 In ``Thermo-Flux`` variability analysis is implemented with the function ``solver.gurobi.variability_analysis()``, which sets the optimization problem for any variables provided as an argument to the function. Specifically, the function uses the Gurobi multi-scenario optimization feature, with two scenarios for each variable (one minimizes the variable and the other maximizes it). The results are retrieved with ``solver.gurobi.variability_results()`` and both functions can still be used if the optimization is solved using a high-performance computing (HPC) cluster.
 
 Step 8: Regression: fitting models to experimental data
@@ -241,9 +228,7 @@ The function ``model.regression()`` can be used to add regression constraints an
 
 .. rubric:: Box 4: additional considerations for regressions
 
-Model starting points
-^^^^^^^^^^^^^^^^^^^^^
-
+**Model starting points**
 The function ``thermo_flux.solver.gurobi.model_start`` has been built to allow MIP start from only non-computed values and reduce the probability of multiplying numerical issues between them. This function can even enable the start from a set of specific variables which are known to not cause numerical issues (for example, starting from only metabolite concentrations). The user can provide starting points in either ``.sol`` or ``.mst`` format:
 
 ::
@@ -253,6 +238,5 @@ The function ``thermo_flux.solver.gurobi.model_start`` has been built to allow M
                                          fix_vars=['qm','ln_conc'],
                                          fix='start')
 
-Multiple starts with different random seeds 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+**Multiple starts with different random seeds**
 As Gurobi is using a branch-and-cut approach to solve the MILP problem, it can sometimes face performance variability issues. An effective way of tackling this problem is to run several optimizations with different values of the seed parameter ``GRBmodel.params.Seed``.

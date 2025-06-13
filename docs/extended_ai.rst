@@ -6,11 +6,11 @@ Introduction
 This page provides detailed technical guidance on how to define the physical, chemical, and thermodynamic properties necessary to build a complete and functional model with Thermo-Flux. It is intended for advanced users who wish to understand or customize the internal thermodynamic processing steps beyond the basic tutorials.
 
 Step 1: Definition of physical and biochemical parameters
----------------------------------------------------------
+*********************************************************
 Thermo-Flux models rely on a well-defined thermodynamic environment. This includes pH, ionic strength, temperature, and compartment-specific membrane potentials.
 
 Membrane Potentials
-^^^^^^^^^^^^^^^^^^^
+-------------------
 Membrane potential difference between compartment c and e is defined as:`\Phi_{ce} = \Phi_c - \Phi_e``, with ``Phi_c`` representing the potential in compartment ``c``.
 
 Table 1 : Physical and biochemical parameters, their units and examples of how to define them in ‘Thermo-Flux’. 
@@ -43,9 +43,9 @@ Table 1 : Physical and biochemical parameters, their units and examples of how t
 
 
 Step 2: Definition of metabolites and chemical species
------------------------------------------------------
+******************************************************
 Connection with eQuilibrator
-****************************
+----------------------------
 ``Thermo-Flux`` automatically recognises the metabolite identifiers and links to the eQuilibrator compound retrieved with ``metabolite.compound``.
 
 Annotations can be user-defined or updated in the attribute ``annotation`` of the metabolite class e.g.:
@@ -55,7 +55,7 @@ Annotations can be user-defined or updated in the attribute ``annotation`` of th
     metabolite.annotation = {'CHEBI':'11111', 'kegg':'C00000'}
 
 Metabolite species
-******************
+------------------
 
 In ``Thermo-Flux``, the average charge, average number of protons, and magnesium ions are returned by the function ``metabolite.average_charge_protons()``, which first interrogates the eQuilibrator compound and then uses the physical parameters defined in Step 1 to return the condition-specific metabolite information.
 
@@ -63,18 +63,18 @@ To facilitate the understanding of these average calculations, this function als
 
 
 Definition of metabolites with non-decomposable or unknown structures
-*********************************************************************
+---------------------------------------------------------------------
 The formula and charge for these metabolites should be defined using the COBRApy attributes with ``metabolite.formula`` and ``metabolite.charge``.
 ::
      model.metabolite.formula = 'C6H12O6'
      model.metabolite.charge = -1
 
 Local cache to access eQuilibrator compounds
-********************************************
+--------------------------------------------
 When ``Thermo-Flux`` queries an eQuilibrator compound for the first time, eQuilibrator will require downloading the latest up-to-date database of eQuilibrator compounds. This local cache is named ``compound.sqlite`` and integrates native functions to retrieve compounds or manually add compounds (see `eQuilibrator local cache <https://equilibrator.readthedocs.io/en/latest/local_cache.html>`_).
 
 Step 3: Calculation of Gibbs formation energies
------------------------------------------------
+***********************************************
 
 The function ``model.update_thermo_info()`` will automatically calculate the required parameters based on the defined physiochemical conditions (Step 1) and the metabolites of the model will now have a defined transformed Gibbs formation energy (``\Delta_f G^\prime``) and an average charge and number of protons.
 
@@ -116,8 +116,8 @@ Care must be taken when defining the units of the biomass formation energy. To m
 
 Biomass formation energy is made dependent on the pH of the biomass metabolite’s compartment when transformed based on the number of hydrogen atoms of which it is formed. It is done automatically when building a ``Thermo-Flux`` model if ``model.update_biomass_dfG0`` is set to True.
 
-Step 4: Defining additional transported protons
------------------------------------------------
+Step 4: Delineation of transporter characteristics
+**************************************************
 
 Additional transported protons can be achieved by altering the reaction stoichiometry (Figure 3b). Alternatively, additional transported protons can be defined using ``reaction.transported_h()``, which represents additional protons transported by a reaction, e.g.:
 
@@ -171,34 +171,34 @@ would need the user to specify:
 as two protons are moved from the mitochondria to the cytosol and are subsequently taken up by the protonation of Ubiquinone-8 into Ubiquinol-8.
 
 Step 5: pH-dependent charge and proton balancing
-------------------------------------------------
+************************************************
 
 Non-transport reactions
-***********************
+-----------------------
 
 The function ``reaction_balance()`` can be used to automatically balance the protons in a reaction based on the compartment conditions with the option to also balance magnesium ions if desired.
 
 In the example of ATP hydrolysis, 0.7 protons will be added to have an equal number of protons and charge on both sides of the reaction (protons are positively charged and therefore charge balance is also maintained).
 
 Transport reactions
-*******************
+-------------------
 
 To balance transport reactions, ``Thermo-Flux`` first identifies the most abundant species (using ``metabolite.major_microspecies`` automatically), then considers it as being transported. The balancing then occurs by comparing what is in the inner compartment, what is being transported and what will be in the outer compartment.
 
 Magnesium ions
-**************
+--------------
 Analogously to protons, Mg2+ ions can also be balanced, and this option is available to the user by setting ``balance_mg=True``.
 
 Step 6: Calculation of Gibbs energy of reactions
-------------------------------------------------
+************************************************
 
 To calculate the standard reaction energy of all reactions in the model, the function ``model.update_thermo_info()`` can be used. Once it has been run, the standard reaction energy and the standard transformed reaction energy (calculated using standard transformed formation energies) can be retrieved for each reaction with ``reaction.drG0`` and ``reaction.drG0prime``, respectively.
 
 Step 7: Establishment of the thermodynamic-stoichiometric solution space
-------------------------------------------------------------------------
+************************************************************************
 
 Metabolite concentration bounds
-*******************************
+-------------------------------
 
 In practice metabolite concentration bounds are defined by setting the ``lower_bound`` and ``upper_bound`` attributes and a user defined unit e.g.:
 
@@ -235,7 +235,7 @@ Variability analysis
 In ``Thermo-Flux`` variability analysis is implemented with the function ``solver.gurobi.variability_analysis()``, which sets the optimization problem for any variables provided as an argument to the function. Specifically, the function uses the Gurobi multi-scenario optimization feature, with two scenarios for each variable (one minimizes the variable and the other maximizes it). The results are retrieved with ``solver.gurobi.variability_results()`` and both functions can still be used if the optimization is solved using a high-performance computing (HPC) cluster.
 
 Step 8: Regression: fitting models to experimental data
--------------------------------------------------------
+*******************************************************
 
 The function ``model.regression()`` can be used to add regression constraints and objectives to the previously constructed thermodynamic FBA problem. Data can be provided for any flux or metabolite concentration, in the pandas DataFrame format.
 

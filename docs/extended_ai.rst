@@ -79,7 +79,7 @@ Step 3: Calculation of Gibbs formation energies
 The function ``model.update_thermo_info()`` will automatically calculate the required parameters based on the defined physiochemical conditions (Step 1) and the metabolites of the model will now have a defined transformed Gibbs formation energy (``\Delta_f G^\prime``) and an average charge and number of protons.
 
 .. rubric:: Box 1: Additional considerations for Gibbs energy of formation calculation
-
+--------------------------------------------------------------------------------------
 Uncertainty
 ^^^^^^^^^^^
 

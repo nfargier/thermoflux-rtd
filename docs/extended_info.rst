@@ -3,7 +3,7 @@ Extended Info
 
 Introduction
 ************
-This page provides detailed technical guidance on the steps required to build a complete and functional model with Thermo-Flux. Going beyond the quickstart and the two tutorial (*e.coli* core model and iMM904 model), here we present examples of code implementation that are relevant to augment your own stoichiometric model with thermodynamic constraints. For the background information and the modelling assumptions, we encourage you to refer to the protocol paper.
+This page provides detailed technical guidance on the steps required to build a complete and functional model with Thermo-Flux. Going beyond the quickstart and the two tutorials (*e.coli* core model and iMM904 model), here we present examples of code implementation that are relevant to augment your own stoichiometric model with thermodynamic constraints. For the background information and the modelling assumptions, we encourage you to refer to the protocol paper.
 
 Step 1: Definition of physical and biochemical parameters
 *********************************************************

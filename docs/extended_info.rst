@@ -234,6 +234,16 @@ Step 8: Regression: fitting models to experimental data
 
 The function ``model.regression()`` can be used to add regression constraints and objectives to the previously constructed thermodynamic FBA problem. Data can be provided for any flux or metabolite concentration, in the pandas DataFrame format.
 
+The Dataframe for the fluxes and the metabolite data needs to be in the following format : 
+
++--------------+-------------+-------+-----+
+| condition    |   rxn/met   | mean  | sd  |
++==============+=============+=======+=====+
+| condition 1  | rxn/met  A  |  XXX  | YYY |
++              +-------------+-------+-----+
+|              | rxn/met  B  |  ZZZ  | WWW |
++--------------+-------------+-------+-----+
+
 .. rubric:: Box 4: additional considerations for regressions
 ------------------------------------------------------------
 

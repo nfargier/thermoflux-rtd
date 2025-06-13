@@ -126,6 +126,7 @@ For each transport reaction, ‘Thermo-Flux’ will automatically determine the 
 to define an additional proton moving from the extracellular (``e``) compartment to the cytosol (``c``).
 
 .. rubric:: Box 2: additional considerations for transport reactions
+--------------------------------------------------------------------
 
 **Adding transporter variants**
 Additionally, in case of transport processes, for which at the given pH value no charge-neutral transport variant exists, we suggest introducing an additional transport reaction, in which protons balancing the charge are co-translocated together with the respective species, i.e., adding a proton symporter or antiporter. This additional transport variant ensures that for every metabolite, a transport variant exists that does not translocate net charge.
@@ -234,7 +235,7 @@ Step 8: Regression: fitting models to experimental data
 
 The function ``model.regression()`` can be used to add regression constraints and objectives to the previously constructed thermodynamic FBA problem. Data can be provided for any flux or metabolite concentration, in the pandas DataFrame format.
 
-The Dataframe for the fluxes and the metabolite data needs to be in the following format : 
+The Dataframe for the fluxes and the metabolite data needs to be in the following format :  
 
 +--------------+-------------+-------+-----+
 | condition    |   rxn/met   | mean  | sd  |
@@ -243,6 +244,8 @@ The Dataframe for the fluxes and the metabolite data needs to be in the followin
 +              +-------------+-------+-----+
 |              | rxn/met  B  |  ZZZ  | WWW |
 +--------------+-------------+-------+-----+
+
+Note the pandas.MultiIndex (condition,rxn/met).
 
 .. rubric:: Box 4: additional considerations for regressions
 ------------------------------------------------------------

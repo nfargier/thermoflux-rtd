@@ -31,13 +31,11 @@ To facilitate the understanding of these average calculations, this function als
 .. rubric:: Box 1: Additional consideration for metabolite definition
 
 Definition of metabolites with non-decomposable or unknown structures
-====================================================================
-
+---------------------------------------------------------------------
 The formula and charge for these metabolites should be defined using the COBRApy attributes with ``metabolite.formula`` and ``metabolite.charge``.
 
 Local cache to access eQuilibrator compounds
-===========================================
-
+--------------------------------------------
 When ``Thermo-Flux`` queries an eQuilibrator compound for the first time, eQuilibrator will require downloading the latest up-to-date database of eQuilibrator compounds. This local cache is named ``compound.sqlite`` and integrates native functions to retrieve compounds or manually add compounds (see `eQuilibrator local cache <https://equilibrator.readthedocs.io/en/latest/local_cache.html>`_).
 
 Step 3: Calculation of Gibbs formation energies
@@ -132,19 +130,19 @@ Step 5: pH-dependent charge and proton balancing
 ***********************************************
 
 Non-transport reactions
-~~~~~~~~~~~~~~~~~~~~~~
+-----------------------
 
 The function ``reaction_balance()`` can be used to automatically balance the protons in a reaction based on the compartment conditions with the option to also balance magnesium ions if desired.
 
 In the example of ATP hydrolysis, 0.7 protons will be added to have an equal number of protons and charge on both sides of the reaction (protons are positively charged and therefore charge balance is also maintained).
 
 Transport reactions
-~~~~~~~~~~~~~~~~~~~
+-------------------
 
 ``Thermo-Flux`` first identifies the most abundant species (using ``metabolite.major_microspecies`` automatically).
 
 Magnesium ions
-~~~~~~~~~~~~~~
+--------------
 
 Analogously to protons, Mg2+ ions can also be balanced, and this option is available to the user by setting ``balance_mg=True``.
 
@@ -157,7 +155,7 @@ Step 7: Establishment of the thermodynamic-stoichiometric solution space
 *************************************************************************
 
 Metabolite concentration bounds
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------------
 
 In practice metabolite concentration bounds are defined by setting the ``lower_bound`` and ``upper_bound`` attributes and a user defined unit e.g.:
 
@@ -174,12 +172,12 @@ The function ``model.add_TFBA_variables()`` sets up a thermodynamic FBA optimisa
 The function ``model.total_cell_conc()`` will add whole cell metabolite concentration constraints on the compartmented metabolic concentrations, based on whole cell metabolite data and the relative compartment volumes which must be provided as an input to the function, respectively as a pandas DataFrame and a Python dictionary.
 
 Relaxing the second law constraint
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------------
 
 The user can relax the second law constraint for any specific reaction by setting ``reaction.ignore_snd = True``.
 
 Ignoring metabolite concentrations
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------------
 
 The concentration of pseudo metabolites that are often added to stoichiometric models as a convenient way to add constraints should also be ignored by setting
 
@@ -188,7 +186,7 @@ The concentration of pseudo metabolites that are often added to stoichiometric m
     metabolite.ignore_conc = True
 
 Variability analysis
-~~~~~~~~~~~~~~~~~~~~
+--------------------
 
 In ``Thermo-Flux`` variability analysis is implemented with the function ``solver.gurobi.variability_analysis()``, which sets the optimization problem for any variables provided as an argument to the function. Specifically, the function uses the Gurobi multi-scenario optimization feature, with two scenarios for each variable (one minimizes the variable and the other maximizes it). The results are retrieved with ``solver.gurobi.variability_results()`` and both functions can still be used if the optimization is solved using a high-performance computing (HPC) cluster.
 

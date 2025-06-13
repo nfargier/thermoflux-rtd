@@ -11,7 +11,9 @@ Thermo-Flux models rely on a well-defined thermodynamic environment. This includ
 
 Membrane Potentials
 -------------------
-Membrane potential difference between compartment c and e is defined as:`\Phi_{ce} = \Phi_c - \Phi_e``, with ``Phi_c`` representing the potential in compartment ``c``.
+Membrane potential difference between compartment c and e is defined as
+:math: `\Phi_{ce} = \Phi_c - \Phi_e`
+with ``Phi_c`` representing the potential in compartment ``c``.
 
 Table 1 : Physical and biochemical parameters, their units and examples of how to define them in ‘Thermo-Flux’. 
 

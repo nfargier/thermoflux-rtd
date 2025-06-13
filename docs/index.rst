@@ -38,7 +38,7 @@ Contents
    self
    Installation
    Quickstart
-   extended_ai
+   extended_info
    api
 
 References

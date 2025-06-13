@@ -9,8 +9,8 @@ except Exception as e:
     print(f"❌ Import failed: {e}")
 
 project = 'Thermo-flux'
-copyright = '2024, E.N.Smith'
-author = 'E.N.Smith'
+copyright = '2025, E.N.Smith & N.Fargier'
+author = 'E.N.Smith & N.Fargier'
 
 #release = '0.1'
 #version = '0.1.0'

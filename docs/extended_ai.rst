@@ -119,7 +119,7 @@ Biomass formation energy is made dependent on the pH of the biomass metabolite�
 Step 4: Delineation of transporter characteristics
 **************************************************
 
-Additional transported protons can be achieved by altering the reaction stoichiometry (Figure 3b). Alternatively, additional transported protons can be defined using ``reaction.transported_h()``, which represents additional protons transported by a reaction, e.g.:
+For each transport reaction, ‘Thermo-Flux’ will automatically determine the transported metabolite, the transported charge, and the transported protons, depending on the defined physiological parameters of the compartments and the reaction stoichiometry. Additional transported protons can be achieved by altering the reaction stoichiometry (Figure 3b). Alternatively, additional transported protons can be defined using ``reaction.transported_h()``, which represents additional protons transported by a reaction, e.g.:
 
 ::
 

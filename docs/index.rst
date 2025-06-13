@@ -32,7 +32,9 @@ How to cite us
 Contents
 --------
 .. toctree::
-   :titlesonly:
+   :hidden:
+   :numbered:
+   :maxdepth: 2
 
    self
    Installation

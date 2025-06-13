@@ -82,6 +82,7 @@ The function ``model.update_thermo_info()`` will automatically calculate the req
 --------------------------------------------------------------------------------------
 
 **Uncertainty**
+
 Different default uncertainty can be specified with ``model.rmse_inf = Q_(3000, 'kJ/mol')``.
 
 We can also estimate a non-zero Gibbs formation energy for metabolites with non-decomposable or unknown structures (see supplementary section “metabolites with unknown formation energy”). This is implemented by the ``fit_unknown_dfG0=True`` argument when estimating Gibbs formation energies.
@@ -143,9 +144,11 @@ Some transport reactions involve chemical transformation of the transported meta
 to represent extracellular glucose as the metabolite that is transported across the membrane.
 
 **Reporting**
+
 By setting the argument ``report`` to True, the function ``model.update_thermo_info()`` can provide a reporting table as a pandas DataFrame, with information on the stoichiometry, balancing status, and transported metabolites/charge/protons of each reaction. In this table, reactions that require inspection by the user will appear in the top rows.
 
 **Ambiguous proton or ion transporters**
+
 It is important to distinguish between free protons that are transported as part of the transport mechanism (e.g. in proton symporters) and protons which are bound/released from metabolites as part of a chemical reaction.
 In general, this is automatically determined but in some cases is ambiguous. Ambiguous reactions are highlighted to the user for manual curation. Curation consists of specifying manually the number of transported free protons or ions, e.g., ``reaction.transported_h = {'e': -1, 'c': 1}`` to represent the transport of one proton from the extracellular to cytosolic compartment.
 
@@ -206,12 +209,15 @@ The function ``model.add_TFBA_variables()`` sets up a thermodynamic FBA optimisa
 .. rubric:: Box 3: additional considerations for the formulation of the thermodynamic/stoichiometric solution space
 
 **Compartmented metabolite concentrations and whole cell concentrations**
+
 The function ``model.total_cell_conc()`` will add whole cell metabolite concentration constraints on the compartmented metabolic concentrations, based on whole cell metabolite data and the relative compartment volumes which must be provided as an input to the function, respectively as a pandas DataFrame and a Python dictionary.
 
 **Relaxing the second law constraint**
+
 The user can relax the second law constraint for any specific reaction by setting ``reaction.ignore_snd = True``.
 
 **Ignoring metabolite concentrations**
+
 The concentration of pseudo metabolites that are often added to stoichiometric models as a convenient way to add constraints should also be ignored by setting
 
 ::
@@ -219,6 +225,7 @@ The concentration of pseudo metabolites that are often added to stoichiometric m
     metabolite.ignore_conc = True
 
 **Variability analysis**
+
 In ``Thermo-Flux`` variability analysis is implemented with the function ``solver.gurobi.variability_analysis()``, which sets the optimization problem for any variables provided as an argument to the function. Specifically, the function uses the Gurobi multi-scenario optimization feature, with two scenarios for each variable (one minimizes the variable and the other maximizes it). The results are retrieved with ``solver.gurobi.variability_results()`` and both functions can still be used if the optimization is solved using a high-performance computing (HPC) cluster.
 
 Step 8: Regression: fitting models to experimental data
@@ -229,6 +236,7 @@ The function ``model.regression()`` can be used to add regression constraints an
 .. rubric:: Box 4: additional considerations for regressions
 
 **Model starting points**
+
 The function ``thermo_flux.solver.gurobi.model_start`` has been built to allow MIP start from only non-computed values and reduce the probability of multiplying numerical issues between them. This function can even enable the start from a set of specific variables which are known to not cause numerical issues (for example, starting from only metabolite concentrations). The user can provide starting points in either ``.sol`` or ``.mst`` format:
 
 ::
@@ -239,4 +247,5 @@ The function ``thermo_flux.solver.gurobi.model_start`` has been built to allow M
                                          fix='start')
 
 **Multiple starts with different random seeds**
+
 As Gurobi is using a branch-and-cut approach to solve the MILP problem, it can sometimes face performance variability issues. An effective way of tackling this problem is to run several optimizations with different values of the seed parameter ``GRBmodel.params.Seed``.

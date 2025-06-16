@@ -91,13 +91,15 @@ We can also estimate a non-zero Gibbs formation energy for metabolites with non-
 
 **Redox**
 
-In ``Thermo-Flux`` a formation energy and a standard error can be explicitly defined, and the ``redox`` attribute set to true to ensure the formation energy is not automatically recalculated, e.g.:
+In ``Thermo-Flux`` a formation energy and a standard error can be explicitly defined, and the ``redox`` attribute set to true to ensure the formation energy is not automatically recalculated.
+For example, the midpoint potential of cytochrome C is 250 mV (Lennarz & Lane, 2013). Applying the Nernst equation at equilibrium yields ∆𝑟𝐺° ′=− 1 × 96.5 × 0.250 = −24.125 𝑘𝐽𝑚𝑜𝑙−1. If the oxidised and reduced cytochrome C always appear as a pair in reactions, the formation energy of the reduced form can be defined as −24.125/2 = −12.05 𝑘𝐽𝑚𝑜𝑙−1 and the oxidised form as 12.05 𝑘𝐽.𝑚𝑜𝑙−1. e.g.:
 
 ::
 
     cyt_c_red_c.dfG0prime() = Q_(-12.05, 'kJ/mol')
     cyt_c_red_c.redox = True
     cyt_c_red_c.dfG_SE = Q_(0, 'kJ/mol')
+
 
 **Biomass**
 

@@ -39,6 +39,7 @@ Contents
    Installation
    Quickstart
    extended_info
+   Case_study_iMM904
    api
 
 References

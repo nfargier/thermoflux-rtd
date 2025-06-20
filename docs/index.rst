@@ -39,7 +39,7 @@ Contents
    Installation
    Quickstart
    extended_info
-   Case_study_iMM904
+   thermoflux_iMM904_ENS
    api
 
 References

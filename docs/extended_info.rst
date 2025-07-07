@@ -102,9 +102,8 @@ For example, the midpoint potential of cytochrome C is 250 mV (Lennarz & Lane, 2
 
 
 **Biomass**
-
+In thermodynamic FBA, calculating the Gibbs formation energy of biomass is optional as we can assume the production of biomass to be thermodynamically feasible. This is modelled either by relaxing the second law constraint for production of biomass or by allowing a large uncertainty in the formation energy of biomass. However, if the Gibbs energy dissipation limit is to be estimated or to be used in FBA-type optimizations, then the Gibbs formation energy of the biomass needs to be specified as it contributes to the total Gibbs energy dissipation of a cell (Niebel et al, 2019).
 In ``Thermo-Flux``, the function ``thermo_flux.tools.drg_tools.dfGbm()`` returns the biomass formation energy given a specified empirical formula of biomass and can be used to explicitly define the biomass formation energy, e.g.:
-
 ::
 
     dfGbm = thermo_flux.tools.drg_tools.dfGbm(H=1.613, O=0.557, N=0.158, P=0.012,

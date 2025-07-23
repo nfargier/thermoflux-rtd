@@ -253,8 +253,13 @@ Note the pandas.MultiIndex (condition,rxn/met).
 .. rubric:: Box 4: additional considerations for regressions
 ------------------------------------------------------------
 
+**Sequential regression**
+
+To reduce computational costs, the regression objectives can be specified separately. For example, it is possible to first estimate thermodynamic parameters () without fitting metabolites concentration, then use this approximate solution as a starting point for further regression to both fluxes and metabolite concentration. 
+
 **Model starting points**
 
+The package comes with built-in helper functions that can provide help when facing numerical issues (values that exceed/violate constraints by a very small amount). This case can be encountered when trying to use the solver’s mixed integer programming (MIP) start functionality. An MIP start is an approach whereby model variables (e.g. fluxes, concentrations, drG) are initialized with pre-computed values before an optimization is run. Such an approach is helpful when trying to solve an optimization problem in a stepwise manner. However, this approach can also lead to numerical issues that prevent successful model restart if the initialized model variables lead to the violation of any constraints. To prevent this, the code in ‘Thermo-flux’ has been built to allow MIP start from a selectable number of variables and thus reduce the probability of multiplying numerical issues between them. 
 The function ``thermo_flux.solver.gurobi.model_start`` has been built to allow MIP start from only non-computed values and reduce the probability of multiplying numerical issues between them. This function can even enable the start from a set of specific variables which are known to not cause numerical issues (for example, starting from only metabolite concentrations). The user can provide starting points in either ``.sol`` or ``.mst`` format:
 
 ::
@@ -265,5 +270,4 @@ The function ``thermo_flux.solver.gurobi.model_start`` has been built to allow M
                                          fix='start')
 
 **Multiple starts with different random seeds**
-
-As Gurobi is using a branch-and-cut approach to solve the MILP problem, it can sometimes face performance variability issues. An effective way of tackling this problem is to run several optimizations with different values of the seed parameter ``GRBmodel.params.Seed``.
+As Gurobi uses a branch-and-cut approach to solve the MIP problem, it can sometimes face performance variability issues. An effective way of tackling this problem is to run several optimizations with a different random “seed”. Setting a different “seed” is equivalent to adding a small perturbation that induces the solver to explore different paths in the solution space to reach the optimal solution (Koch et al, 2011). High performance computing (HPC) job scheduling scripts can automatically generate jobs for optimisations with different random seeds. We provide example scripts for using the SLURM job scheduler in the “HPC” directory. The seed parameter is accessed with ``GRBmodel.params.Seed``.
